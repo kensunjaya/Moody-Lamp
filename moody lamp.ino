@@ -14,6 +14,12 @@ int base = 340;          // 4 ---> output analog jika tidak ada suara sama sekal
 int highestReadDiff = 0; // 5 ---> variabel untuk menyimpan angka output analog tertinggi
 
 unsigned long myTime;
+int signalMax = 0;
+int signalMin = 1024;
+int peakToPeak = signalMax - signalMin;  // max - min = peak-peak amplitude
+double volts;
+double first;
+double scnd;
 
 void setup() {
   Serial.begin(9600);
@@ -60,8 +66,14 @@ void loop() {
 
   }
 
-  
   micValue = analogRead(micPin);                
-  Serial.println(micValue, DEC);                // 22 ---> bagian ini hanya berfungsi untuk menampilkan angka bacaan analog (misal 344, 376, 352, dll) ke console, agar bisa dilihat grafiknya di serial plotter
+  //Serial.println(micValue, DEC);                // 22 ---> bagian ini hanya berfungsi untuk menampilkan angka bacaan analog (misal 344, 376, 352, dll) ke console, agar bisa dilihat grafiknya di serial plotter
                                                 // 23 ---> selanjutnya program akan terus menerus melakukan forever loop mulai dari void loop() (poin ke-8 sampai ke-22) beda dengan void setup() yang hanya dilakukan 1x
+
+  
+  double volts = ((peakToPeak * 3.3) / 1024) * 0.707;  // convert to RMS voltage
+  double first = log10(volts/0.00631)*20;
+  double scnd = first + 94 - 44 - 25;
+  Serial.println(scnd);
 }
+
